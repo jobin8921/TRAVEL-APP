@@ -5,6 +5,9 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
 
+def index(request):
+    return render(request, 'index.html')
+
 def register(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -52,7 +55,7 @@ def login_view(request):
 
 def logout_view(request):
     request.session.flush()  # Clear session
-    return redirect('login')
+    return redirect('index')
 
 def dashboard(request):
     if 'customer_id' not in request.session:
