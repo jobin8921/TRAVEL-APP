@@ -28,5 +28,5 @@ migrations/
 # Environment variables file
 .env
 
-places/
-media/places/
+
+media/
