@@ -4,45 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h2>Admin Dashboard - User List</h2>
-    <table>
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Gender</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Country</th>
-        </tr>
-        {% for customer in customers %}
-        <tr>
-            <td>{{ customer.username }}</td>
-            <td>{{ customer.email }}</td>
-            <td>{{ customer.phone_number }}</td>
-            <td>{{ customer.gender }}</td>
-            <td>{{ customer.city }}</td>
-            <td>{{ customer.state }}</td>
-            <td>{{ customer.country }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="{% url 'logout' %}">Logout</a>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Admin Dashboard - User List</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Gender</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Country</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.username }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.phone_number }}</td>
+                        <td>{{ customer.gender }}</td>
+                        <td>{{ customer.city }}</td>
+                        <td>{{ customer.state }}</td>
+                        <td>{{ customer.country }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <h2 class="text-center mt-5">Places to Visit</h2>
+        <div class="d-flex justify-content-between mb-3">
+            <h4>Places</h4>
+            <a href="{% url 'add_place' %}" class="btn btn-primary">Add New Place</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for place in places %}
+                    <tr>
+                        <td>{{ place.name }}</td>
+                        <td>{{ place.location }}</td>
+                        <td>{{ place.description }}</td>
+                        <td>
+                            {% if place.image %}
+                            <img src="{{ place.image.url }}" alt="Place Image" class="img-thumbnail" width="100">
+                            {% else %}
+                            No Image
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -4,6 +4,8 @@ from home.models import Customer
 from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
+from home.models import Place
 
 def index(request):
     return render(request, 'index.html')
@@ -69,6 +71,29 @@ def admin_dashboard(request):
     
     customers = Customer.objects.all()
 
-    return render(request, 'admin_dashboard.html', {'customers': customers})
+    places=Place.objects.all()
+
+    return render(request, 'admin_dashboard.html', {'customers': customers,'places':places})
+
+def add_place(request):
+
+    if request.method=='POST':
+
+        name=request.POST.get('name')
+        location=request.POST.get('location')
+        description=request.POST.get('description')
+        image=request.FILES.get('image')
+
+        if name and location and description:
+            place=Place(name=name,location=location,description=description)
+
+            if image:
+
+              place.image=image
+
+        place.save()
+        return redirect('admin_dashboard')    
+    
+    return render(request,'add_place.html')
 
 
