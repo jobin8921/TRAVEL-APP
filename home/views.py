@@ -62,4 +62,10 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', {'customer': customer})
 
+def admin_dashboard(request):
+    
+    customers = Customer.objects.all()
+
+    return render(request, 'admin_dashboard.html', {'customers': customers})
+
 
