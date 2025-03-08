@@ -1,10 +1,9 @@
-from django.shortcuts import render
-
-
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from home.models import Customer
+from django.contrib.auth import login, logout
+from django.contrib.auth.hashers import check_password
+from django.http import HttpResponse
 
 def register(request):
     if request.method == "POST":
@@ -33,10 +32,6 @@ def register(request):
 
     return render(request, 'registration.html')
 
-from django.contrib.auth.hashers import check_password
-from django.http import HttpResponse
-from django.contrib.auth import login, logout
-from home.models import Customer
 
 def login_view(request):
     if request.method == "POST":
