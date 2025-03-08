@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from home.models import Customer
-from django.contrib.auth import login, logout
+from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
 
@@ -54,8 +54,8 @@ def login_view(request):
     return render(request, 'login.html')
 
 def logout_view(request):
-    request.session.flush()  # Clear session
-    return redirect('index')
+    logout(request)  # Django's inbuilt logout function
+    return redirect('index') 
 
 def dashboard(request):
     if 'customer_id' not in request.session:
