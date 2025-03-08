@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Place</title>
+</head>
+<body>
+    <h2>Add a New Place</h2>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Name:</label>
+        <input type="text" name="name" required><br><br>
+
+        <label>Location:</label>
+        <input type="text" name="location" required><br><br>
+
+        <label>Description:</label>
+        <textarea name="description" required></textarea><br><br>
+
+        <label>Image:</label>
+        <input type="file" name="image"><br><br>
+
+        <button type="submit">Add Place</button>
+    </form>
+    <br>
+    <a href="{% url 'admin_dashboard' %}">Back to Admin Dashboard</a>
+</body>
+</html>

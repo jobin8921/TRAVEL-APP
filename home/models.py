@@ -21,3 +21,11 @@ class Customer(models.Model):
     def __str__(self):
         return self.username
 
+class Place(models.Model):
+    name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='places/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
