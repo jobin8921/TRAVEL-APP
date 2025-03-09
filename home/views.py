@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import make_password
 from home.models import Customer
 from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
-from home.models import Place
+from home.models import Place,Booking
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'index.html')
@@ -65,7 +67,9 @@ def dashboard(request):
     
     customer = Customer.objects.get(id=request.session['customer_id'])
 
-    return render(request, 'dashboard.html', {'customer': customer})
+    places=Place.objects.all()
+
+    return render(request, 'dashboard.html', {'customer': customer,'places':places})
 
 def admin_dashboard(request):
     
@@ -97,3 +101,18 @@ def add_place(request):
     return render(request,'add_place.html')
 
 
+def book_place(request):
+    places = Place.objects.all()  # Fetch all places for the dropdown
+    if request.method=='POST':
+        place_id=request.POST.get('place_id')
+        date=request.POST.get('date')
+        guests=request.POST.get('guests')
+        special_request=request.POST.get('requests')
+
+        place=get_object_or_404(Place,id=place_id)
+        booking=Booking.objects.create(user=request.user,place=place,date=date,guests=guests,special_request=special_request)
+        messages.success(request,"Your booking has been confirmed")
+        
+        return redirect("dashboard")
+    
+    return render(request,'booking.html',{'places':places})
