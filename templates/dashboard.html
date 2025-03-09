@@ -3,10 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Customer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #343a40;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        .sidebar a:hover {
+            background: #495057;
+            border-radius: 5px;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            width: 100%;
+        }
+        .card img {
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
-    <h2>Welcome to {{customer.username}}</h2>
-    <a href="{% url 'logout' %}">Logout</a>
+    <div class="sidebar">
+        <h3 class="text-center">Dashboard</h3>
+        <a href="#profile"><i class="fas fa-user"></i> Profile</a>
+        <a href="#book-place"><i class="fas fa-map-marked-alt"></i> Book Place</a>
+        <a href="#places"><i class="fas fa-list"></i> Places Listing</a>
+        <a href="#itinerary"><i class="fas fa-calendar"></i> Itinerary</a>
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+    <div class="content">
+        <h2>Welcome to Your Travel Dashboard</h2>
+        
+        <!-- Profile Section -->
+        <section id="profile" class="mb-4">
+            <h4>Profile</h4>
+            <p><strong>Username:</strong> {{ customer.username }}</p>
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone_number }}</p>
+        </section>
+        
+        <!-- Book Place -->
+        <section id="book-place" class="mb-4">
+            <h4>Book a Place</h4>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Select Place:</label>
+                    <select class="form-select" name="place">
+                        {% for place in places %}
+                        <option value="{{ place.id }}">{{ place.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <a href="{% url 'book_place' %}" class="btn btn-success">Book Now</a>
+
+            </form>
+        </section>
+        
+        <!-- Places Listing -->
+        <section id="places" class="mb-4">
+            <h4>Available Places</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for place in places %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                {% if place.image %}
+                                <img src="{{ place.image.url }}" alt="{{ place.name }}" width="100" height="70" style="object-fit: cover;">
+                                {% else %}
+                                No Image
+                                {% endif %}
+                            </td>
+                            <td>{{ place.name }}</td>
+                            <td>{{ place.location }}</td>
+                            <td>{{ place.description }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No places available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        
+        <!-- Itinerary -->
+        <section id="itinerary">
+            <h4>Your Itinerary</h4>
+            <ul class="list-group">
+                {% for booking in bookings %}
+                <li class="list-group-item">
+                    <strong>{{ booking.place.name }}</strong> - {{ booking.date }}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

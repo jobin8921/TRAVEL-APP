@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.from django.db import models
 
 class Customer(models.Model):
@@ -29,3 +30,12 @@ class Place(models.Model):
 
     def __str__(self):
         return self.name
+    
+# Booking Model - Users Book Places
+class Booking(models.Model):
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    date = models.DateField()
+    guests = models.IntegerField()
+    special_requests = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)    
