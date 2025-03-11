@@ -59,32 +59,7 @@
             <input type="text" id="searchInput" class="form-control" placeholder="Search for places..." onkeyup="filterPlaces()">
         </div>
 
-        <!-- Booking Form -->
-        <h3>Booking Form</h3>
-        <form method="POST" action="{% url 'book_place' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="place" class="form-label">Select a Place</label>
-                <select class="form-select" name="place_id" id="placeSelect" required>
-                    {% for place in places %}
-                    <option value="{{ place.id }}">{{ place.name }} - {{ place.location }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="date" class="form-label">Travel Date</label>
-                <input type="date" name="date" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="guests" class="form-label">Number of Guests</label>
-                <input type="number" name="guests" class="form-control" min="1" required>
-            </div>
-            <div class="mb-3">
-                <label for="requests" class="form-label">Special Requests</label>
-                <textarea name="requests" class="form-control" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn btn-success">Confirm Booking</button>
-        </form>
+<!-- Booking Form -->
 
         <!-- Available Places Table -->
         <h3 class="mt-4">Available Places</h3>
@@ -115,7 +90,7 @@
                         <td>{{ place.location }}</td>
                         <td>{{ place.description }}</td>
                         <td>
-                            <a href="{% url 'book_place' %}" class="btn btn-primary btn-sm">Book Now</a>
+                            <a href="{% url 'add_to_itinerary' place.id %}">Add to Itinerary</a>
                         </td>
                     </tr>
                     {% empty %}

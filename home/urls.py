@@ -10,4 +10,8 @@ urlpatterns = [
     path('admin-dashboard/',views.admin_dashboard,name='admin_dashboard'),
     path('add-place/',views.add_place, name='add_place'),
     path('book/', views.book_place, name="book_place"),
+    path('add-to-itinerary/<int:place_id>/', views.add_to_itinerary, name='add_to_itinerary'),
+    path('view-itinerary/', views.view_itinerary, name='view_itinerary'),
+    path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
+
 ]
