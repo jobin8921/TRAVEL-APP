@@ -13,5 +13,8 @@ urlpatterns = [
     path('add-to-itinerary/<int:place_id>/', views.add_to_itinerary, name='add_to_itinerary'),
     path('view-itinerary/', views.view_itinerary, name='view_itinerary'),
     path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
+    path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
+    path('payment-success/', views.payment_success, name='payment_success'),
+
 
 ]

@@ -100,6 +100,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Razorpay API Keys
+RAZORPAY_KEY_ID = "rzp_test_oigjbZZSZXDCR7"
+RAZORPAY_KEY_SECRET = "7lB3VZQrSbfyhyNUMCTZOa2r"
 
 
 
