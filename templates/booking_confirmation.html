@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        h2 {
+            color: #28a745;
+        }
+        .details {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .details p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .places-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .places-list li {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Booking Confirmed! 🎉</h2>
+    <p>Your travel itinerary has been successfully booked.</p>
+
+    <div class="details">
+        <h3>Customer Details:</h3>
+        <p><strong>Name:</strong> {{ itinerary.customer.username }}</p>
+        <p><strong>Email:</strong> {{ itinerary.customer.email }}</p>
+        <p><strong>Phone:</strong> {{ itinerary.customer.phone_number }}</p>
+
+        <h3>Places in Your Itinerary:</h3>
+        <ul class="places-list">
+            {% for place in itinerary.places.all %}
+                <li>{{ place.name }} - {{ place.location }}</li>
+            {% empty %}
+                <li>No places added to itinerary.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="button">Back to Dashboard</a>
+</div>
+
+</body>
+</html>

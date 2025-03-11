@@ -47,7 +47,7 @@
         <a href="#profile"><i class="fas fa-user"></i> Profile</a>
         <a href="#book-place"><i class="fas fa-map-marked-alt"></i> Book Place</a>
         <a href="#places"><i class="fas fa-list"></i> Places Listing</a>
-        <a href="#itinerary"><i class="fas fa-calendar"></i> Itinerary</a>
+        <a href="{% url 'view_itinerary' %}"><i class="fas fa-calendar"></i> Itinerary</a>
         <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
     <div class="content">
@@ -61,12 +61,7 @@
             <p><strong>Phone:</strong> {{ customer.phone_number }}</p>
         </section>
         
-        <!-- Book Place -->
-<section id="book-place" class="mb-4">
-    <h4>Book a Place</h4>
-    <a href="{% url 'book_place' %}" class="btn btn-success">Book Now</a>
-</section>
-
+        
         
         <!-- Places Listing -->
         <section id="places" class="mb-4">
