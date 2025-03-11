@@ -74,10 +74,11 @@ def dashboard(request):
 def admin_dashboard(request):
     
     customers = Customer.objects.all()
+    confirmed_bookings = Itinerary.objects.filter(confirmed=True)
 
     places=Place.objects.all()
 
-    return render(request, 'admin_dashboard.html', {'customers': customers,'places':places})
+    return render(request, 'admin_dashboard.html', {'customers': customers,'places':places,'confirmed_bookings':confirmed_bookings})
 
 def add_place(request):
 
@@ -151,8 +152,20 @@ def view_itinerary(request):
 
     return render(request, 'view_itinerary.html', {'itinerary': itinerary})
 
+
 def confirm_booking(request):
-    itinerary=Itinerary.objects.get(custormer=request.user)
-    itinerary.confirmed=True
+    if 'customer_id' not in request.session:
+        return redirect('login')  # Redirect if not logged in
+
+    # Fetch the logged-in customer using session
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, id=customer_id)
+
+    # Retrieve the customer's itinerary
+    itinerary = get_object_or_404(Itinerary, customer=customer)
+
+    # Mark itinerary as confirmed
+    itinerary.confirmed = True
     itinerary.save()
-    return render(request,'booking_confirmation.html')
+
+    return render(request, 'booking_confirmation.html', {'itinerary': itinerary})
