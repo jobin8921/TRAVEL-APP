@@ -60,7 +60,10 @@
             <p><strong>Email:</strong> {{ customer.email }}</p>
             <p><strong>Phone:</strong> {{ customer.phone_number }}</p>
         </section>
-        
+        <section id="book-place" class="mb-4">
+            <h4>Book a Place</h4>
+            <a href="{% url 'book_place' %}" class="btn btn-success">Book Now</a>
+        </section>
         
         
         <!-- Places Listing -->

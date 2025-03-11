@@ -7,6 +7,10 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from home.models import Place,Booking,Itinerary
 from django.contrib import messages
+import razorpay
+from django.conf import settings
+from django.http import JsonResponse
+
 
 
 def index(request):
@@ -155,17 +159,52 @@ def view_itinerary(request):
 
 def confirm_booking(request):
     if 'customer_id' not in request.session:
-        return redirect('login')  # Redirect if not logged in
+        return redirect('login')
 
-    # Fetch the logged-in customer using session
     customer_id = request.session['customer_id']
     customer = get_object_or_404(Customer, id=customer_id)
 
-    # Retrieve the customer's itinerary
     itinerary = get_object_or_404(Itinerary, customer=customer)
 
+    # Set the booking amount (Assume each booking costs ₹1000)
+    amount = 1000 * 100  # Amount in paise (₹1000 = 100000 paise)
+
+    # Initialize Razorpay client
+    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+    # Create a Razorpay Order
+    order_data = {
+        "amount": amount,
+        "currency": "INR",
+        "payment_capture": "1"  # Auto-capture payment
+    }
+    order = client.order.create(order_data)
+
+    # Save the order ID in session (to verify later)
+    request.session['razorpay_order_id'] = order['id']
+
+    return render(request, 'payment.html', {
+        "customer": customer,
+        "itinerary": itinerary,
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "amount": amount,
+        "order_id": order['id']
+    })
+
+
+
+def payment_success(request):
+    if 'customer_id' not in request.session:
+        return redirect('login')
+
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, id=customer_id)
+
+    itinerary = get_object_or_404(Itinerary, customer=customer)
+    
     # Mark itinerary as confirmed
     itinerary.confirmed = True
     itinerary.save()
 
-    return render(request, 'booking_confirmation.html', {'itinerary': itinerary})
+    return render(request, 'payment_success.html', {"customer": customer, "itinerary": itinerary})
+
