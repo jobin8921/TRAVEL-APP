@@ -5,9 +5,9 @@ from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
-from home.models import Place,Booking
+from home.models import Place,Booking,Itinerary
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+
 
 def index(request):
     return render(request, 'index.html')
@@ -116,3 +116,43 @@ def book_place(request):
         return redirect("dashboard")
     
     return render(request,'booking.html',{'places':places})
+
+
+
+def add_to_itinerary(request, place_id):
+    if 'customer_id' not in request.session:
+        return redirect('login')  # Redirect if not logged in
+
+    # Fetch the customer using session data
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, id=customer_id)
+
+    place = get_object_or_404(Place, id=place_id)
+    
+    # Get or create itinerary for this customer
+    itinerary, created = Itinerary.objects.get_or_create(customer=customer)
+
+    # Add the selected place to the itinerary
+    itinerary.places.add(place)
+
+    return redirect('view_itinerary')
+
+
+def view_itinerary(request):
+    if 'customer_id' not in request.session:
+        return redirect('login')  # Redirect if not logged in
+
+    # Fetch the customer from session
+    customer_id = request.session['customer_id']
+    customer = get_object_or_404(Customer, id=customer_id)
+
+    # Get the itinerary for the logged-in customer
+    itinerary, created = Itinerary.objects.get_or_create(customer=customer)
+
+    return render(request, 'view_itinerary.html', {'itinerary': itinerary})
+
+def confirm_booking(request):
+    itinerary=Itinerary.objects.get(custormer=request.user)
+    itinerary.confirmed=True
+    itinerary.save()
+    return render(request,'booking_confirmation.html')

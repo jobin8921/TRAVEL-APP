@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Itinerary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .place {
+            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+        .place img {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .place-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .place-details {
+            flex-grow: 1;
+            padding-left: 15px;
+        }
+        .confirm-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .confirm-btn:hover {
+            background: #218838;
+        }
+        .back-btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .back-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Your Itinerary</h2>
+
+        {% if itinerary.places.all %}
+            {% for place in itinerary.places.all %}
+                <div class="place">
+                    <div class="place-info">
+                        {% if place.image %}
+                            <img src="{{ place.image.url }}" alt="{{ place.name }}">
+                        {% endif %}
+                        <div class="place-details">
+                            <h3>{{ place.name }}</h3>
+                            <p><strong>Location:</strong> {{ place.location }}</p>
+                            <p>{{ place.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <a href="{% url 'confirm_booking' %}" class="confirm-btn">Confirm Booking</a>
+        {% else %}
+            <p>No places added yet. Start building your itinerary!</p>
+        {% endif %}
+        
+        <br>
+        <a href="{% url 'dashboard' %}" class="back-btn">Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

@@ -39,3 +39,8 @@ class Booking(models.Model):
     guests = models.IntegerField()
     special_requests = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)    
+
+class Itinerary(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)  
+    places=models.ManyToManyField(Place) 
+    confirmed=models.BooleanField(default=False) 

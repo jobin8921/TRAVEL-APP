@@ -62,22 +62,11 @@
         </section>
         
         <!-- Book Place -->
-        <section id="book-place" class="mb-4">
-            <h4>Book a Place</h4>
-            <form method="POST" action="">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label">Select Place:</label>
-                    <select class="form-select" name="place">
-                        {% for place in places %}
-                        <option value="{{ place.id }}">{{ place.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <a href="{% url 'book_place' %}" class="btn btn-success">Book Now</a>
+<section id="book-place" class="mb-4">
+    <h4>Book a Place</h4>
+    <a href="{% url 'book_place' %}" class="btn btn-success">Book Now</a>
+</section>
 
-            </form>
-        </section>
         
         <!-- Places Listing -->
         <section id="places" class="mb-4">
@@ -91,7 +80,7 @@
                             <th>Name</th>
                             <th>Location</th>
                             <th>Description</th>
-                            <th>Action</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
