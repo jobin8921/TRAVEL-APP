@@ -46,20 +46,29 @@ def register(request):
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST["username"]
+        password = request.POST["password"]
 
         try:
-            customer = Customer.objects.get(username=username)
-            if check_password(password, customer.password):  # Verify password
-                request.session['customer_id'] = customer.id  # Store session
-                return redirect('dashboard')  # Redirect to dashboard
-            else:
-                return HttpResponse("Invalid credentials")
-        except Customer.DoesNotExist:
-            return HttpResponse("User not found")
+            user = Customer.objects.get(username=username)
 
-    return render(request, 'login.html')
+            if check_password(password, user.password):  # Verify password
+                request.session["customer_id"] = user.id
+
+                # Redirect based on user type
+                if user.is_admin:
+                    return redirect("admin_dashboard")  # Redirect admins
+                else:
+                    return redirect("dashboard")  # Redirect regular users
+
+            else:
+                return render(request, "login.html", {"error": "Invalid password."})
+
+        except Customer.DoesNotExist:
+            return render(request, "login.html", {"error": "User does not exist."})
+
+    return render(request, "login.html")
+
 
 def logout_view(request):
     logout(request)  # Django's inbuilt logout function
@@ -75,14 +84,47 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', {'customer': customer,'places':places})
 
+
+# Import models
+
 def admin_dashboard(request):
+    if "customer_id" not in request.session:
+        return redirect("login")  # Redirect if not logged in
     
-    customers = Customer.objects.all()
+    # Get the current logged-in admin
+    try:
+        admin_user = Customer.objects.get(id=request.session["customer_id"])
+    except Customer.DoesNotExist:
+        return redirect("login")  # Redirect if session ID is invalid
+
+    # Ensure only admins can access
+    if not admin_user.is_admin:
+        return redirect("dashboard")
+
     confirmed_bookings = Itinerary.objects.filter(confirmed=True)
+    places = Place.objects.all()
 
-    places=Place.objects.all()
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
-    return render(request, 'admin_dashboard.html', {'customers': customers,'places':places,'confirmed_bookings':confirmed_bookings})
+        if username and password:
+            # Create a new admin user
+            new_admin = Customer.objects.create(
+                username=username,
+                password=make_password(password),  # Hash the password
+                is_admin=True  # Mark as admin
+            )
+
+            return redirect("admin_dashboard")  # Redirect back after adding
+
+    admins = Customer.objects.filter(is_admin=True)  # Get all admins
+    return render(request, "admin_dashboard.html", {
+        "admins": admins,
+        "confirmed_bookings": confirmed_bookings,
+        "places": places,
+    })
+
 
 def add_place(request):
 

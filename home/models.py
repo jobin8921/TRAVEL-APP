@@ -18,6 +18,7 @@ class Customer(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
+    is_admin = models.BooleanField(default=False)  
 
     def __str__(self):
         return self.username
@@ -44,3 +45,4 @@ class Itinerary(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)  
     places=models.ManyToManyField(Place) 
     confirmed=models.BooleanField(default=False) 
+
