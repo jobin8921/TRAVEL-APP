@@ -58,9 +58,10 @@ def login_view(request):
 
         # Check if user is a regular customer
         try:
-            user = Customer.objects.get(username=username, password=password)
-            request.session["customer_id"] = user.id
-            return redirect("dashboard")  # Redirect normal user to dashboard
+            user = Customer.objects.get(username=username)
+            if check_password(password, user.password):  # Securely check hashed password
+                request.session["customer_id"] = user.id
+                return redirect("dashboard")  # Redirect normal user to dashboard
         except Customer.DoesNotExist:
             return render(request, "login.html", {"error": "Invalid credentials."})
 
