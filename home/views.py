@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import make_password
-from home.models import Customer
+from home.models import Customer,AdminProfile
 from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
@@ -43,32 +43,28 @@ def register(request):
 
     return render(request, 'registration.html')
 
-
 def login_view(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
+        # Check if user is an admin
         try:
-            user = Customer.objects.get(username=username)
+            admin = AdminProfile.objects.get(name=username, password=password)
+            request.session["admin_id"] = admin.id  # Store admin session
+            return redirect("admin_dashboard")  # Redirect to admin panel if admin
+        except AdminProfile.DoesNotExist:
+            pass  # Continue checking regular users
 
-            if check_password(password, user.password):  # Verify password
-                request.session["customer_id"] = user.id
-
-                # Redirect based on user type
-                if user.is_admin:
-                    return redirect("admin_dashboard")  # Redirect admins
-                else:
-                    return redirect("dashboard")  # Redirect regular users
-
-            else:
-                return render(request, "login.html", {"error": "Invalid password."})
-
+        # Check if user is a regular customer
+        try:
+            user = Customer.objects.get(username=username, password=password)
+            request.session["customer_id"] = user.id
+            return redirect("dashboard")  # Redirect normal user to dashboard
         except Customer.DoesNotExist:
-            return render(request, "login.html", {"error": "User does not exist."})
+            return render(request, "login.html", {"error": "Invalid credentials."})
 
     return render(request, "login.html")
-
 
 def logout_view(request):
     logout(request)  # Django's inbuilt logout function
@@ -88,42 +84,29 @@ def dashboard(request):
 # Import models
 
 def admin_dashboard(request):
-    if "customer_id" not in request.session:
-        return redirect("login")  # Redirect if not logged in
+    if "admin_id" not in request.session:
+        return redirect("login")  # Redirect if not logged in as admin
     
     # Get the current logged-in admin
     try:
-        admin_user = Customer.objects.get(id=request.session["customer_id"])
-    except Customer.DoesNotExist:
+        admin_user = AdminProfile.objects.get(id=request.session["admin_id"])
+    except AdminProfile.DoesNotExist:
         return redirect("login")  # Redirect if session ID is invalid
-
-    # Ensure only admins can access
-    if not admin_user.is_admin:
-        return redirect("dashboard")
+    
+    customers = Customer.objects.filter(is_admin=False)
 
     confirmed_bookings = Itinerary.objects.filter(confirmed=True)
     places = Place.objects.all()
+    admins = AdminProfile.objects.all()  # Get all admins
 
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-
-        if username and password:
-            # Create a new admin user
-            new_admin = Customer.objects.create(
-                username=username,
-                password=make_password(password),  # Hash the password
-                is_admin=True  # Mark as admin
-            )
-
-            return redirect("admin_dashboard")  # Redirect back after adding
-
-    admins = Customer.objects.filter(is_admin=True)  # Get all admins
     return render(request, "admin_dashboard.html", {
+        "admin_user": admin_user,
         "admins": admins,
         "confirmed_bookings": confirmed_bookings,
         "places": places,
+        'customers':customers,
     })
+
 
 
 def add_place(request):
@@ -250,3 +233,20 @@ def payment_success(request):
 
     return render(request, 'payment_success.html', {"customer": customer, "itinerary": itinerary})
 
+
+
+def register_admin(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        gmail = request.POST.get("gmail")
+        password = request.POST.get("password")
+
+        # Ensure fields are not empty
+        if name and gmail and password:
+            if not AdminProfile.objects.filter(name=name).exists():
+                AdminProfile.objects.create(name=name, gmail=gmail, password=password)
+                return redirect("login")  # Redirect to login after successful registration
+            else:
+                return render(request, "admin_register.html", {"error": "Admin username already exists."})
+
+    return render(request, "admin_register.html")

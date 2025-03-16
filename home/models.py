@@ -1,6 +1,5 @@
 from django.db import models
 
-
 # Create your models here.from django.db import models
 
 class Customer(models.Model):
@@ -45,4 +44,9 @@ class Itinerary(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)  
     places=models.ManyToManyField(Place) 
     confirmed=models.BooleanField(default=False) 
+
+class AdminProfile(models.Model):
+    name=models.CharField(max_length=225,unique=True)
+    gmail=models.EmailField(unique=True)
+    password=models.CharField(max_length=255)
 

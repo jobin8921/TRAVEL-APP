@@ -190,31 +190,40 @@
                     </tbody>
                 </table>
             </div>
-        </section>
-        <section class="container mt-4">
-            <h3 class="mb-3">Add New Admin</h3>
-            <form method="POST" class="border p-4 rounded shadow-sm">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username:</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required>
+          
+            
+            
+            
+                <!-- Existing Admins Section -->
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h4>Existing Admins</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if admins %}
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for admin in admins %}
+                                    <tr>
+                                        <td>{{ admin.name }}</td>
+                                        <td>{{ admin.gmail }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p class="text-muted">No admins found.</p>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Admin</button>
-            </form>
-        </section>
-        
-        <section class="container mt-4">
-            <h3 class="mb-3">Existing Admins</h3>
-            <ul class="list-group">
-                {% for admin in admins %}
-                    <li class="list-group-item">{{ admin.username }}</li>
-                {% endfor %}
-            </ul>
-        </section>
+            </section>
+            
           
 
     </div>

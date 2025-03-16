@@ -15,6 +15,7 @@ urlpatterns = [
     path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
     path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
     path('payment-success/', views.payment_success, name='payment_success'),
+    path("admin-register/", views.register_admin, name="admin_register")
 
 
 ]
