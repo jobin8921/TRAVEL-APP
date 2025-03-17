@@ -16,6 +16,9 @@ from django.http import JsonResponse
 def index(request):
     return render(request, 'index.html')
 
+def about(request):
+    return render(request, 'about.html')
+
 def register(request):
     if request.method == "POST":
         username = request.POST['username']
