@@ -50,3 +50,11 @@ class AdminProfile(models.Model):
     gmail=models.EmailField(unique=True)
     password=models.CharField(max_length=255)
 
+class Package(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    num_people = models.IntegerField()
+    destination = models.CharField(max_length=255)
+    num_days = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+

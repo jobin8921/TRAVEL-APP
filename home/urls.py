@@ -5,7 +5,7 @@ urlpatterns = [
     path('',views.index,name='index'),
     path('about/',views.about,name='about'),
     path('service/',views.service,name='service'),
-    
+    path('packages/',views.packages,name='packages'),
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
@@ -18,7 +18,7 @@ urlpatterns = [
     path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
     path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
     path('payment-success/', views.payment_success, name='payment_success'),
-    path("admin-register/", views.register_admin, name="admin_register")
-
+    path("admin-register/", views.register_admin, name="admin_register"),
+    path("add-package/",views.add_package, name="add_package"),
 
 ]
