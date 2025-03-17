@@ -5,7 +5,7 @@ from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
-from home.models import Place,Booking,Itinerary
+from home.models import Place,Booking,Itinerary,Package
 from django.contrib import messages
 import razorpay
 from django.conf import settings
@@ -21,6 +21,11 @@ def about(request):
 
 def service(request):
     return render(request,'service.html')
+
+def packages(request):
+    return render(request,'package.html')
+
+
 
 def register(request):
     if request.method == "POST":
@@ -257,3 +262,27 @@ def register_admin(request):
                 return render(request, "admin_register.html", {"error": "Admin username already exists."})
 
     return render(request, "admin_register.html")
+
+
+def add_package(request):
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        price = request.POST.get("price")
+        num_people = request.POST.get("num_people")
+        destination = request.POST.get("destination")
+        num_days = request.POST.get("num_days")
+
+        # Validate form input
+        if name and price and num_people and destination and num_days:
+            Package.objects.create(
+                name=name,
+                price=price,
+                num_people=num_people,
+                destination=destination,
+                num_days=num_days
+            )
+            return render(request,"add_package.html")  # Redirect to package list
+
+    return render(request, "add_package.html")
+
