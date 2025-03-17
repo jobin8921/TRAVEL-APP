@@ -19,6 +19,9 @@ def index(request):
 def about(request):
     return render(request, 'about.html')
 
+def service(request):
+    return render(request,'service.html')
+
 def register(request):
     if request.method == "POST":
         username = request.POST['username']
