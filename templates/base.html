@@ -82,7 +82,7 @@
                     <a href="/" class="nav-item nav-link active">Home</a>
                     <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
                     <a href="{% url 'service'%}" class="nav-item nav-link">Services</a>
-                    <a href="package.html" class="nav-item nav-link">Packages</a>
+                    <a href="{% url 'packages' %}" class="nav-item nav-link">Packages</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                         <div class="dropdown-menu m-0">
@@ -96,7 +96,29 @@
                     </div>
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
                 </div>
-                <a href='{% url "register" %}'' class="btn btn-primary rounded-pill py-2 px-4">Register</a>
+                <div class="dropdown">
+                    {% if request.session.username %}
+                        <!-- If customer is logged in, show username and Logout -->
+                        <button class="btn btn-primary dropdown-toggle rounded-pill py-2 px-4" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ request.session.username }}  <!-- Display logged-in user's name -->
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="authDropdown">
+                            <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    {% else %}
+                        <!-- If no user is logged in, show Account with Login/Register -->
+                        <button class="btn btn-primary dropdown-toggle rounded-pill py-2 px-4" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Account
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="authDropdown">
+                            <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+                            <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                
             </div>
         </nav>
         <main>
