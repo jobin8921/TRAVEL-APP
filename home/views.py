@@ -23,10 +23,6 @@ def about(request):
 def service(request):
     return render(request,'service.html')
 
-def packages(request):
-
-    package=Package.objects.all()
-    return render(request,'package.html',{'packages':package})
 
 
 def register(request):
