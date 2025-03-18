@@ -14,8 +14,9 @@ from django.http import JsonResponse
 
 
 def index(request):
-    return render(request, 'index.html')
-
+    packages = Package.objects.all()  # Fetch all available packages
+    return render(request, "index.html", {"packages": packages})
+   
 def about(request):
     return render(request, 'about.html')
 
@@ -160,7 +161,7 @@ def book_place(request):
         
         return redirect("dashboard")
     
-    return render(request,'booking.html',{'places':places,'booking':booking})
+    return render(request,'booking.html',{'places':places})
 
 
 
