@@ -23,8 +23,9 @@ def service(request):
     return render(request,'service.html')
 
 def packages(request):
-    return render(request,'package.html')
 
+    package=Package.objects.all()
+    return render(request,'package.html',{'packages':package})
 
 
 def register(request):
@@ -70,9 +71,11 @@ def login_view(request):
         # Check if user is a regular customer
         try:
             user = Customer.objects.get(username=username)
-            if check_password(password, user.password):  # Securely check hashed password
+            if check_password(password, user.password):  
                 request.session["customer_id"] = user.id
-                return redirect("dashboard")  # Redirect normal user to dashboard
+                request.session["username"] = user.username  # Store username in session
+                return redirect("index")  
+
         except Customer.DoesNotExist:
             return render(request, "login.html", {"error": "Invalid credentials."})
 
@@ -157,7 +160,7 @@ def book_place(request):
         
         return redirect("dashboard")
     
-    return render(request,'booking.html',{'places':places})
+    return render(request,'booking.html',{'places':places,'booking':booking})
 
 
 
@@ -267,16 +270,16 @@ def register_admin(request):
 def add_package(request):
 
     if request.method == "POST":
-        name = request.POST.get("name")
+     
         price = request.POST.get("price")
         num_people = request.POST.get("num_people")
         destination = request.POST.get("destination")
         num_days = request.POST.get("num_days")
 
         # Validate form input
-        if name and price and num_people and destination and num_days:
+        if  price and num_people and destination and num_days:
             Package.objects.create(
-                name=name,
+                
                 price=price,
                 num_people=num_people,
                 destination=destination,
