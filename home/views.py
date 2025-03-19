@@ -12,19 +12,20 @@ from django.conf import settings
 from django.http import JsonResponse
 
 
-
+# view for index page
 def index(request):
     packages = Package.objects.all()  # Fetch all available packages
     return render(request, "index.html", {"packages": packages})
-   
+
+# view for about page   
 def about(request):
     return render(request, 'about.html')
 
+# view for sevice page
 def service(request):
     return render(request,'service.html')
 
-
-
+# view for registering a client
 def register(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -52,6 +53,7 @@ def register(request):
 
     return render(request, 'registration.html')
 
+# view for login page
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -78,10 +80,12 @@ def login_view(request):
 
     return render(request, "login.html")
 
+#view for logout 
 def logout_view(request):
     logout(request)  # Django's inbuilt logout function
     return redirect('index') 
 
+# view for customer dashboard
 def dashboard(request):
     if 'customer_id' not in request.session:
         return redirect('login')  # Redirect if not logged in
@@ -93,8 +97,8 @@ def dashboard(request):
     return render(request, 'dashboard.html', {'customer': customer,'places':places})
 
 
-# Import models
 
+# view for admin dashboard
 def admin_dashboard(request):
     if "admin_id" not in request.session:
         return redirect("login")  # Redirect if not logged in as admin
@@ -120,7 +124,7 @@ def admin_dashboard(request):
     })
 
 
-
+# view for adding a place 
 def add_place(request):
 
     if request.method=='POST':
@@ -142,7 +146,7 @@ def add_place(request):
     
     return render(request,'add_place.html')
 
-
+# view for booking place 
 def book_place(request):
     places = Place.objects.all()  # Fetch all places for the dropdown
     if request.method=='POST':
@@ -160,7 +164,7 @@ def book_place(request):
     return render(request,'booking.html',{'places':places})
 
 
-
+# view for adding a place to itinerary
 def add_to_itinerary(request, place_id):
     if 'customer_id' not in request.session:
         return redirect('login')  # Redirect if not logged in
@@ -179,7 +183,7 @@ def add_to_itinerary(request, place_id):
 
     return redirect('view_itinerary')
 
-
+# view for view the itinerary page
 def view_itinerary(request):
     if 'customer_id' not in request.session:
         return redirect('login')  # Redirect if not logged in
@@ -193,7 +197,7 @@ def view_itinerary(request):
 
     return render(request, 'view_itinerary.html', {'itinerary': itinerary})
 
-
+# view for confirm booking 
 def confirm_booking(request):
     if 'customer_id' not in request.session:
         return redirect('login')
@@ -229,7 +233,7 @@ def confirm_booking(request):
     })
 
 
-
+# view for payment sucess page
 def payment_success(request):
     if 'customer_id' not in request.session:
         return redirect('login')
@@ -246,7 +250,7 @@ def payment_success(request):
     return render(request, 'payment_success.html', {"customer": customer, "itinerary": itinerary})
 
 
-
+# view for registering admin
 def register_admin(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -264,6 +268,7 @@ def register_admin(request):
     return render(request, "admin_register.html")
 
 
+# view for adding a package
 def add_package(request):
 
     if request.method == "POST":
