@@ -283,21 +283,19 @@ def add_package(request):
         destination = request.POST.get("destination")
         num_days = request.POST.get("num_days")
 
-        print(f"Received Data: Price={price}, People={num_people}, Destination={destination}, Days={num_days}")  # Debugging
+        
 
         # Validate form input
         if price and num_people and destination and num_days:
-            try:
-                Package.objects.create(
-                    price=price,
-                    num_people=num_people,
-                    destination=destination,
-                    num_days=num_days
-                )
-                messages.success(request, "Package added successfully!")
-                return redirect("admin_dashboard")  # Redirect to refresh the page
-            except Exception as e:
-                messages.error(request, f"Error: {e}")  # Show error message
+        
+            Package.objects.create(
+                price=price,
+                num_people=num_people,
+                destination=destination,
+                num_days=num_days
+            )
+            messages.success(request, "Package added successfully!")
+            return redirect("admin_dashboard")  # Redirect to refresh the page
         else:
             messages.error(request, "All fields are required!")
 
@@ -312,7 +310,7 @@ def book_tour(request):
         destination = request.POST.get("destination")
         special_request = request.POST.get("special_request", "")
 
-        try:
+        if name and email and date_time and destination:
             TourBooking.objects.create(
                 name=name,
                 email=email,
@@ -320,9 +318,9 @@ def book_tour(request):
                 destination=destination,
                 special_request=special_request,
             )
-            messages.success(request, "Booking sent successgully!")
+            messages.success(request, "Booking sent successfully!")
             return redirect("book_tour")
-        except Exception as e:
-            messages.error(request, f"Error: {e}")
+        else:
+            messages.error(request, "All fields except 'Special Request' are required!")
     
     return render(request, "index.html")
