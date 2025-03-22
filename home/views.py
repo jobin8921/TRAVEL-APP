@@ -102,6 +102,7 @@ def dashboard(request):
 def admin_dashboard(request):
     if "admin_id" not in request.session:
         return redirect("login")  # Redirect if not logged in as admin
+
     
     # Get the current logged-in admin
     try:
@@ -115,12 +116,15 @@ def admin_dashboard(request):
     places = Place.objects.all()
     admins = AdminProfile.objects.all()  # Get all admins
 
+    packages = Package.objects.all()
+
     return render(request, "admin_dashboard.html", {
         "admin_user": admin_user,
         "admins": admins,
         "confirmed_bookings": confirmed_bookings,
         "places": places,
-        'customers':customers,
+        'customers': customers,
+        'packages': packages,
     })
 
 
@@ -270,24 +274,29 @@ def register_admin(request):
 
 # view for adding a package
 def add_package(request):
-
     if request.method == "POST":
-     
         price = request.POST.get("price")
         num_people = request.POST.get("num_people")
         destination = request.POST.get("destination")
         num_days = request.POST.get("num_days")
 
-        # Validate form input
-        if  price and num_people and destination and num_days:
-            Package.objects.create(
-                
-                price=price,
-                num_people=num_people,
-                destination=destination,
-                num_days=num_days
-            )
-            return render(request,"add_package.html")  # Redirect to package list
+        print(f"Received Data: Price={price}, People={num_people}, Destination={destination}, Days={num_days}")  # Debugging
 
-    return render(request, "add_package.html")
+        # Validate form input
+        if price and num_people and destination and num_days:
+            try:
+                Package.objects.create(
+                    price=price,
+                    num_people=num_people,
+                    destination=destination,
+                    num_days=num_days
+                )
+                messages.success(request, "Package added successfully!")
+                return redirect("admin_dashboard")  # Redirect to refresh the page
+            except Exception as e:
+                messages.error(request, f"Error: {e}")  # Show error message
+        else:
+            messages.error(request, "All fields are required!")
+
+    return render(request, "admin_dashboard.html")
 
