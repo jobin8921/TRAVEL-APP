@@ -35,5 +35,5 @@ urlpatterns = [
     # url for adding a package
     path("add-package/",views.add_package, name="add_package"),
     path("book-tour/", views.book_tour, name="book_tour"),
-
+    path("booking-preview/<int:package_id>/", views.booking_preview, name="booking_preview"),
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import make_password
-from home.models import Customer,AdminProfile, TourBooking
+from home.models import Customer,AdminProfile, TourBooking, Package
 from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
@@ -55,6 +55,8 @@ def register(request):
 
 # view for login page
 def login_view(request):
+    next_url = request.GET.get("next")  # Capture 'next' parameter from URL
+    
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -73,7 +75,7 @@ def login_view(request):
             if check_password(password, user.password):  
                 request.session["customer_id"] = user.id
                 request.session["username"] = user.username  # Store username in session
-                return redirect("index")  
+                return redirect(next_url if next_url else "index")  
 
         except Customer.DoesNotExist:
             return render(request, "login.html", {"error": "Invalid credentials."})
@@ -234,6 +236,7 @@ def confirm_booking(request):
     return render(request, 'payment.html', {
         "customer": customer,
         "itinerary": itinerary,
+        "booking": booking,
         "razorpay_key": settings.RAZORPAY_KEY_ID,
         "amount": amount,
         "order_id": order['id']
@@ -324,3 +327,11 @@ def book_tour(request):
             messages.error(request, "All fields except 'Special Request' are required!")
     
     return render(request, "index.html")
+
+def booking_preview(request, package_id):
+    package = get_object_or_404(Package, id=package_id)
+    
+    if request.method == "POST":
+        return redirect('confirm_booking', package_id=package.id)
+    return render(request, "booking_preview.html", {"package": package})
+

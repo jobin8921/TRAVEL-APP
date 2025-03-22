@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+    {% block content %}
+    <section class="container mt-5">
+        <h2 class="text-center">Booking Preview</h2>
+    
+        <div class="card shadow p-4">
+            <h3 class="text-primary">{{ package.destination }}</h3>
+            <p><strong>Price:</strong> ${{ package.price }}</p>
+            <p><strong>Number of People:</strong> {{ package.num_people }}</p>
+            <p><strong>Duration:</strong> {{ package.num_days }} days</p>
+    
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="destination" value="{{ package.destination }}">
+                <input type="hidden" name="price" value="{{ package.price }}">
+                <input type="hidden" name="num_people" value="{{ package.num_people }}">
+                <input type="hidden" name="num_days" value="{{ package.num_days }}">
+    
+                <button type="submit" class="btn btn-success w-100 mt-3">Confirm Booking</button>
+            </form>
+        </div>
+    </section>
+    
+{% endblock %}
