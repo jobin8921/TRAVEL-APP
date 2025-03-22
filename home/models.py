@@ -57,3 +57,11 @@ class Package(models.Model):
     num_days = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+# class for booking the tour from the index page
+class TourBooking(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    date_time = models.DateTimeField()
+    destination = models.CharField(max_length=255)
+    special_request = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
