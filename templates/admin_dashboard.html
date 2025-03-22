@@ -275,6 +275,37 @@
                     </tbody>
                 </table>
             </div>
+
+
+
+            <h2>Tour Booking Requests</h2>
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date & Time</th>
+            <th>Destination</th>
+            <th>Special Request</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in tour_bookings %}
+        <tr>
+            <td>{{ booking.name }}</td>
+            <td>{{ booking.email }}</td>
+            <td>{{ booking.date_time }}</td>
+            <td>{{ booking.destination }}</td>
+            <td>{{ booking.special_request }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No bookings available</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
           
             
             

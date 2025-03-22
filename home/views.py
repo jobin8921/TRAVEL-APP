@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import make_password
-from home.models import Customer,AdminProfile
+from home.models import Customer,AdminProfile, TourBooking
 from django.contrib.auth import  logout
 from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse
@@ -118,6 +118,8 @@ def admin_dashboard(request):
 
     packages = Package.objects.all()
 
+    tour_bookings = TourBooking.objects.all()
+
     return render(request, "admin_dashboard.html", {
         "admin_user": admin_user,
         "admins": admins,
@@ -125,6 +127,7 @@ def admin_dashboard(request):
         "places": places,
         'customers': customers,
         'packages': packages,
+        'tour_bookings': tour_bookings,
     })
 
 
@@ -300,3 +303,26 @@ def add_package(request):
 
     return render(request, "admin_dashboard.html")
 
+
+def book_tour(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        date_time = request.POST.get("date_time")
+        destination = request.POST.get("destination")
+        special_request = request.POST.get("special_request", "")
+
+        try:
+            TourBooking.objects.create(
+                name=name,
+                email=email,
+                date_time=date_time,
+                destination=destination,
+                special_request=special_request,
+            )
+            messages.success(request, "Booking sent successgully!")
+            return redirect("book_tour")
+        except Exception as e:
+            messages.error(request, f"Error: {e}")
+    
+    return render(request, "index.html")

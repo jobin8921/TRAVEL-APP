@@ -34,5 +34,6 @@ urlpatterns = [
     path("admin-register/", views.register_admin, name="admin_register"),
     # url for adding a package
     path("add-package/",views.add_package, name="add_package"),
+    path("book-tour/", views.book_tour, name="book_tour"),
 
 ]
