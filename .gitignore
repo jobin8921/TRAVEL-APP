@@ -9,6 +9,10 @@ _pycache_/
 *.pyc
 *.pyo
 *.pyd
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
 
 # Django database (if using SQLite)
 db.sqlite3
