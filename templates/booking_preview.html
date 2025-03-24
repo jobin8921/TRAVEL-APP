@@ -1,26 +1,39 @@
 {% extends 'base.html' %}
 
+{% block content %}
+<section class="container mt-5">
+    <h2 class="text-center">Booking Preview</h2>
 
-    {% block content %}
-    <section class="container mt-5">
-        <h2 class="text-center">Booking Preview</h2>
-    
-        <div class="card shadow p-4">
-            <h3 class="text-primary">{{ package.destination }}</h3>
-            <p><strong>Price:</strong> ${{ package.price }}</p>
-            <p><strong>Number of People:</strong> {{ package.num_people }}</p>
-            <p><strong>Duration:</strong> {{ package.num_days }} days</p>
-    
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="destination" value="{{ package.destination }}">
-                <input type="hidden" name="price" value="{{ package.price }}">
-                <input type="hidden" name="num_people" value="{{ package.num_people }}">
-                <input type="hidden" name="num_days" value="{{ package.num_days }}">
-    
-                <button type="submit" class="btn btn-success w-100 mt-3">Confirm Booking</button>
-            </form>
-        </div>
-    </section>
-    
+    <div class="card shadow p-4">
+        <h3 class="text-primary">{{ package.destination }}</h3>
+        <p><strong>Price:</strong> ₹{{ package.price }}</p>
+        <p><strong>Number of People:</strong> {{ package.num_people }}</p>
+        <p><strong>Duration:</strong> {{ package.num_days }} days</p>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Name:</label>
+            <input type="text" name="name" class="form-control" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" class="form-control" required>
+
+            <label>Date & Time:</label>
+            <input type="datetime-local" name="date_time" class="form-control" required>
+
+            <label>Destination:</label>
+            <input type="text" name="destination" class="form-control" value="{{ package.destination }}" readonly>
+
+            <label>Special Requests (optional):</label>
+            <textarea name="special_request" class="form-control"></textarea>
+
+            <button type="submit" class="btn btn-success w-100 mt-3">Confirm Booking</button>
+        </form>
+    </div>
+</section>
 {% endblock %}

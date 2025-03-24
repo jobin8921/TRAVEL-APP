@@ -26,14 +26,16 @@ urlpatterns = [
     path('add-to-itinerary/<int:place_id>/', views.add_to_itinerary, name='add_to_itinerary'),
     # url for viewing the view-itinerary
     path('view-itinerary/', views.view_itinerary, name='view_itinerary'),
-    # url for confirm-booking
-    path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
-    # url for payment-success
-    path('payment-success/', views.payment_success, name='payment_success'),
+    # # url for confirm-booking
+    # path('confirm-booking/', views.confirm_booking, name='confirm_booking'),
+    # # url for payment-success
+    # path('payment-success/', views.payment_success, name='payment_success'),
     # url for admin-registration
     path("admin-register/", views.register_admin, name="admin_register"),
     # url for adding a package
     path("add-package/",views.add_package, name="add_package"),
     path("book-tour/", views.book_tour, name="book_tour"),
     path("booking-preview/<int:package_id>/", views.booking_preview, name="booking_preview"),
+    # url for payment-success
+    path("payment-success/", views.payment_success, name="payment_success"),
 ]

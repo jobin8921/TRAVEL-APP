@@ -206,59 +206,6 @@ def view_itinerary(request):
 
     return render(request, 'view_itinerary.html', {'itinerary': itinerary})
 
-# view for confirm booking 
-def confirm_booking(request):
-    if 'customer_id' not in request.session:
-        return redirect('login')
-
-    customer_id = request.session['customer_id']
-    customer = get_object_or_404(Customer, id=customer_id)
-
-    itinerary = get_object_or_404(Itinerary, customer=customer)
-
-    # Set the booking amount (Assume each booking costs ₹1000)
-    amount = 1000 * 100  # Amount in paise (₹1000 = 100000 paise)
-
-    # Initialize Razorpay client
-    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-
-    # Create a Razorpay Order
-    order_data = {
-        "amount": amount,
-        "currency": "INR",
-        "payment_capture": "1"  # Auto-capture payment
-    }
-    order = client.order.create(order_data)
-
-    # Save the order ID in session (to verify later)
-    request.session['razorpay_order_id'] = order['id']
-
-    return render(request, 'payment.html', {
-        "customer": customer,
-        "itinerary": itinerary,
-        "booking": booking,
-        "razorpay_key": settings.RAZORPAY_KEY_ID,
-        "amount": amount,
-        "order_id": order['id']
-    })
-
-
-# view for payment sucess page
-def payment_success(request):
-    if 'customer_id' not in request.session:
-        return redirect('login')
-
-    customer_id = request.session['customer_id']
-    customer = get_object_or_404(Customer, id=customer_id)
-
-    itinerary = get_object_or_404(Itinerary, customer=customer)
-    
-    # Mark itinerary as confirmed
-    itinerary.confirmed = True
-    itinerary.save()
-
-    return render(request, 'payment_success.html', {"customer": customer, "itinerary": itinerary})
-
 
 # view for registering admin
 def register_admin(request):
@@ -332,6 +279,70 @@ def booking_preview(request, package_id):
     package = get_object_or_404(Package, id=package_id)
     
     if request.method == "POST":
-        return redirect('confirm_booking', package_id=package.id)
+        name = request.POST['name']
+        email = request.POST['email']
+        date_time = request.POST['date_time']
+        destination = request.POST['destination']
+        special_request = request.POST['special_request']
+
+        # Validate required fields
+        if not all([name, email, date_time, destination]):
+            return render(request, "booking_preview.html", {
+                "package": package,
+                "error": "All fields are required!"
+            })
+
+        # Create a booking instance
+        booking = TourBooking.objects.create(
+            name=name,
+            email=email,
+            date_time=date_time,
+            destination=destination,
+            special_request=special_request,
+        )
+
+        # Razorpay client
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+        # Order details
+        order_data = {
+            "amount": int(package.price),
+            "currency": "INR",
+            "receipt": str(booking.id),
+            "payment_capture": 1,
+        }
+
+        # Create order
+        order = client.order.create(order_data)
+
+        # Save order ID in booking
+        booking.razorpay_order_id = order['id']
+        booking.save()
+
+        return render(
+            request, "payment.html",
+            {
+                'package': package,
+                'booking': booking,
+                'razorpay_key': settings.RAZORPAY_KEY_ID,
+                'order_id': order['id'],
+                'amount': order['amount'],
+            },
+        )
+
     return render(request, "booking_preview.html", {"package": package})
 
+
+def payment_success(request):
+    payment_id = request.GET.get('payment_id')
+    order_id = request.GET.get('order_id')
+    signature = request.GET.get('signature')
+
+    booking = TourBooking.objects.get(razorpay_order_id=order_id)
+
+    booking.razorpay_payment_id = payment_id
+    booking.razorpay_signature = signature
+    booking.is_paid = True
+    booking.save()
+
+    return render(request, 'payment_sucess.html', {'booking': booking})
