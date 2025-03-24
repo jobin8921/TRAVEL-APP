@@ -65,3 +65,7 @@ class TourBooking(models.Model):
     destination = models.CharField(max_length=255)
     special_request = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    razorpay_order_id = models.CharField(max_length=255, blank=True, null=True)
+    razorpay_payment_id = models.CharField(max_length=255, blank=True, null=True)
+    razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
+    is_paid = models.BooleanField(default=False)

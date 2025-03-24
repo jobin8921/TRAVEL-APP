@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
     <h2>Complete Your Payment</h2>
-    <p>Amount to Pay: ₹{{ amount|divisibleby:100 }}</p>
+    <p>Package: {{ package.destination }}</p>
+    <p>Price: ₹{{ amount|floatformat:2 }}</p>
 
-    <form id="razorpay-form">
-        <script
-            src="https://checkout.razorpay.com/v1/checkout.js"
-            data-key="{{ razorpay_key }}"
-            data-amount="{{ amount }}"
-            data-currency="INR"
-            data-order_id="{{ order_id }}"
-            data-buttontext="Pay Now"
-            data-name="Travel Booking"
-            data-description="Confirm Your Booking"
-            data-theme.color="#F37254">
-        </script>
-    </form>
+    <button id="pay-btn">Pay Now</button>
+
+    <script>
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount }}",
+            "currency": "INR",
+            "name": "Tour Booking",
+            "description": "Payment for {{ package.destination }}",
+            "order_id": "{{ order_id }}",
+            "handler": function (response) {
+                // Redirect to success page
+                window.location.href = "/payment-success/?payment_id=" + response.razorpay_payment_id + 
+                    "&order_id=" + response.razorpay_order_id + 
+                    "&signature=" + response.razorpay_signature;
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        
+        var rzp1 = new Razorpay(options);
+        document.getElementById('pay-btn').onclick = function(e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
 </body>
 </html>
